@@ -17,6 +17,19 @@ public class Livre {
         this.prix = prix;
     }
 
+    public Livre(String[] data) throws BadDataForThisConstructor{
+        try{
+            //this(data[1], Integer.parseInt(data[0]), Integer.parseInt(data[3]), data[2], Integer.parseInt(data[5]), Double.parseDouble(data[4]));
+            this.titre = data[1];
+            this.code = Integer.parseInt(data[0]);
+            this.codeAuteur = Integer.parseInt(data[3]);
+            this.catagorie = data[2];
+            this.nbPage = Integer.parseInt(data[5]);
+            this.prix = Double.parseDouble(data[4]);
+        }catch (Exception e){
+            throw new BadDataForThisConstructor("Erreur dans les données du constructeur : Livre : " + e);
+        }
+    }
 
     public int getCode() {
         return code;

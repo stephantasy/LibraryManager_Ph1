@@ -1,5 +1,7 @@
 package com.stephantasy;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 
@@ -12,17 +14,21 @@ public class Main {
           */
         Signatures BdDonnees = new Bdd();
 
+
         try {
             BdDonnees.lireBddAut("Auteurs.txt");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e);
         }
+
         try {
             BdDonnees.lireBddLivre("Livres.txt");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e);
         }
 
+
+/*
         Auteur unAuteur = new Auteur("KING, STEPHEN", 1,"USA");
         BdDonnees.addAuteur(unAuteur); //code existe déjà, doit être ignoré
 
@@ -38,12 +44,12 @@ public class Main {
         unLivre = new Livre("LISTE MORTELLE", 232, 154,"Roman",439, 17.99);
         BdDonnees.addLivre(unLivre);
 
-
-        //Pour afficher les livres d'un auteur par son nom
+        // Pour afficher les livres d'un auteur par son nom
         unAuteur = BdDonnees.getAuteur("VERNE, JULES");
         Collection oeuvres = BdDonnees.getColLivresAut(unAuteur);
-        if(oeuvres != null)  /* prévoyez la méthode getNom dans Auteur */
-        System.out.println("Les oeuvres de " + unAuteur.getNom() + "\n"+ oeuvres);
+        // prévoyez la méthode getNom dans Auteur
+        if(oeuvres != null)
+            System.out.println("Les oeuvres de " + unAuteur.getNom() + "\n"+ oeuvres);
 
         //Pour afficher les livres d'un auteur par son code
         unAuteur = BdDonnees.getAuteur(39);
@@ -70,7 +76,10 @@ public class Main {
             e.printStackTrace();
         }
 
+*/
+
         //Prévoyez un toString dans Bdd pour faire afficher en ordre de saisie des auteurs
         System.out.println(BdDonnees);
+
     }
 }

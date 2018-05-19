@@ -1,16 +1,26 @@
 package com.stephantasy;
 
-public class Auteur {
+public class Auteur implements Comparable<Auteur>{
     private int code;
     private String nom;
     private String pays;
 
-    public Auteur(String nom, int code, String pays) {
+    public Auteur(String nom, int code, String pays)  {
         this.nom = nom;
         this.code = code;
         this.pays = pays;
     }
 
+    public Auteur(String[] data) throws BadDataForThisConstructor {
+        //this(data[1], Integer.parseInt(data[0]), data[2]);
+        try{
+            this.nom = data[1];
+            this.code = Integer.parseInt(data[0]);
+            this.pays = data[2];
+        }catch (Exception e){
+            throw new BadDataForThisConstructor("Erreur dans les données du constructeur : Auteur : " + e);
+        }
+    }
 
     public int getCode() {
         return code;
@@ -32,5 +42,20 @@ public class Auteur {
     @Override
     public int hashCode() {
         return code;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Nom : %s ; Pays : %s ; Code : %d", nom, pays, code);
+    }
+
+    @Override
+    public int compareTo(Auteur o) {
+        if(code == o.code)
+            return 0;
+        else if(code > o.code)
+            return 1;
+        else
+            return -1;
     }
 }

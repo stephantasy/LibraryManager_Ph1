@@ -1,34 +1,57 @@
 package com.stephantasy;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class Bdd implements Signatures{
 
-    private Map<Auteur, Set<Livre>> map = new TreeMap<Auteur, Set<Livre>>();
+    private Map<Auteur, TreeSet<Livre>> mapBiblio = new TreeMap<>();
+
+    private int m_lineNumber = 0; // Pour tracer le numéro de ligne en erreur lors de la lecture d'un fichier
 
     public Bdd(){
-        // Constructeur vide
+        /* Constructeur vide demandé par le client */
     }
 
     /**
      * Permet de lire un fichier d’auteurs passé en argument de créer la map et ajouter les auteurs à la map.
      *   => La partie valeur associée à chaque auteur est une nouvelle collection vide.
-     * @param nomFichier
-     * @throws IOException
+     * @param nomFichier : Nom du fichier
+     * @throws IOException : Erreur lors de la lecture
      */
     @Override
     public void lireBddAut(String nomFichier) throws IOException {
 
+        // Utilisation d'un Try-With-Resource Satement pour fermer automatiquement le Stream
+        try (Stream<String> stream = Files.lines( Paths.get(nomFichier), StandardCharsets.UTF_8))
+        {
+            m_lineNumber = 0;
+            stream.forEach(s -> addToMap(getObject("AUTEUR", s)));
+        }
+        catch (IOException e)
+        {
+            throw new IOException("Erreur lors de la lecture du fichier " + nomFichier);
+        }
     }
+
+    private <T> void addToMap(T object) {
+        if( object instanceof Auteur) {
+            mapBiblio.put((Auteur)object, null);
+        }
+        else if( object instanceof Livre) {
+            // TODO
+        }
+    }
+
 
     /**
      * ajoute un auteur, passé en argument, dans la map.  La partie valeur associée est une nouvelle collection vide.
      *   => Si l’auteur s’y trouve déjà, l’ajout est ignoré (pas de remplacement).
-     * @param a
+     * @param a : Auteur à ajouter
      */
     @Override
     public void addAuteur(Auteur a) {
@@ -45,6 +68,16 @@ public class Bdd implements Signatures{
     @Override
     public void lireBddLivre(String nomFichier) throws IOException {
 
+        // Utilisation d'un Try-With-Resource Satement pour fermer automatiquement le Stream
+        try (Stream<String> stream = Files.lines( Paths.get(nomFichier), StandardCharsets.UTF_8))
+        {
+            m_lineNumber = 0;
+            stream.forEach(s -> addToMap(getObject("LIVRE", s)));
+        }
+        catch (IOException e)
+        {
+            throw new IOException("Erreur lors de la lecture du fichier " + nomFichier);
+        }
     }
 
     /**
@@ -130,10 +163,32 @@ public class Bdd implements Signatures{
 
     /**
      * Pour permettre l’affichage de la map en ordre croissant du nom des auteurs.
-     * @return
+     * @return La liste des noms des auteurs
      */
     @Override
     public String toString() {
-        return super.toString();
+        // TODO
+        return mapBiblio.toString();
     }
+
+
+    /* PRIVATE PART */
+
+
+    @SuppressWarnings("unchecked")
+    // Permet de récupérer un Auteur ou un Livre
+    private <T> T getObject(String type, String data) {
+        m_lineNumber++;
+        T t = null;
+        String[] s = data.trim().split("\t");
+        ObjectFactory of = new ObjectFactory();
+        try {
+            t = (T) of.getObject(type, s);
+        } catch (BadDataForThisConstructor e) {
+            System.out.println(e.getMessage() + " (Ligne " + m_lineNumber + ")");
+        }
+        return t;
+    }
+
+
 }
