@@ -36,7 +36,7 @@ public class Auteur implements Comparable<Auteur>{
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        return code == ((Auteur)obj).code;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class Auteur implements Comparable<Auteur>{
 
     @Override
     public String toString() {
-        return String.format("Nom : %s ; Pays : %s ; Code : %d", nom, pays, code);
+        return String.format("%s", nom);
     }
 
     @Override

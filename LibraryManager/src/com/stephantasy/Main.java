@@ -14,7 +14,6 @@ public class Main {
           */
         Signatures BdDonnees = new Bdd();
 
-
         try {
             BdDonnees.lireBddAut("Auteurs.txt");
         } catch (IOException e) {
@@ -27,8 +26,6 @@ public class Main {
             System.out.println(e);
         }
 
-
-/*
         Auteur unAuteur = new Auteur("KING, STEPHEN", 1,"USA");
         BdDonnees.addAuteur(unAuteur); //code existe déjà, doit être ignoré
 
@@ -44,6 +41,7 @@ public class Main {
         unLivre = new Livre("LISTE MORTELLE", 232, 154,"Roman",439, 17.99);
         BdDonnees.addLivre(unLivre);
 
+/*
         // Pour afficher les livres d'un auteur par son nom
         unAuteur = BdDonnees.getAuteur("VERNE, JULES");
         Collection oeuvres = BdDonnees.getColLivresAut(unAuteur);
@@ -75,11 +73,18 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 */
 
-        //Prévoyez un toString dans Bdd pour faire afficher en ordre de saisie des auteurs
-        System.out.println(BdDonnees);
 
+        //Prévoyez un toString dans Bdd pour faire afficher en ordre de saisie des auteurs
+        //
+        //System.out.println(((Bdd) BdDonnees).toString2());
+
+        System.out.println("******************************************************************");
+
+
+        System.out.println("******************************************************************");
+
+        System.out.println(BdDonnees);
     }
 }

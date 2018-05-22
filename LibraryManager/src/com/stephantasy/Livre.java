@@ -1,6 +1,6 @@
 package com.stephantasy;
 
-public class Livre {
+public class Livre implements Comparable<Livre> {
     private int code;
     private String titre;
     private String catagorie;
@@ -53,5 +53,39 @@ public class Livre {
 
     public int getNbPage() {
         return nbPage;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return code;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%-42s %-12s %-8s %d", titre, catagorie, Double.toString(prix) + "$", code);
+    }
+
+    /**
+     * On compare le nom du livre, puis son code s'il sont identiques
+     * @param o
+     * @return
+     */
+    @Override
+    public int compareTo(Livre o) {
+        int result = titre.compareTo(o.titre);
+        if(result == 0){
+            if(code == o.code)
+                return 0;
+            else if(code > o.code)
+                return 1;
+            else
+                return -1;
+        }
+        return result;
     }
 }

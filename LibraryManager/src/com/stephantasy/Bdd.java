@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 public class Bdd implements Signatures{
 
-    private Map<Auteur, TreeSet<Livre>> mapBiblio = new TreeMap<>();
+    private TreeMap<Auteur, TreeSet<Livre>> mapBiblio = new TreeMap<>();
 
     private int m_lineNumber = 0; // Pour tracer le numéro de ligne en erreur lors de la lecture d'un fichier
 
@@ -38,12 +38,17 @@ public class Bdd implements Signatures{
         }
     }
 
-    private <T> void addToMap(T object) {
-        if( object instanceof Auteur) {
-            mapBiblio.put((Auteur)object, null);
+    /**
+     * Ajout d'auteurs ou de livres à notre Map
+     * @param obj
+     * @param <T>
+     */
+    private <T> void addToMap(T obj) {
+        if( obj instanceof Auteur) {
+            addAuteur((Auteur) obj);
         }
-        else if( object instanceof Livre) {
-            // TODO
+        else if( obj instanceof Livre) {
+            addLivre((Livre) obj);
         }
     }
 
@@ -55,7 +60,8 @@ public class Bdd implements Signatures{
      */
     @Override
     public void addAuteur(Auteur a) {
-
+        // On a que la clé, donc la valeur est nulle
+        mapBiblio.put(a, new TreeSet<>());
     }
 
     /**
@@ -87,7 +93,15 @@ public class Bdd implements Signatures{
      */
     @Override
     public void addLivre(Livre l) {
+        for(Map.Entry<Auteur, TreeSet<Livre>> entry : mapBiblio.entrySet()) {
+            Auteur auteur = entry.getKey();
 
+            // L'auteur est déjà présent, on lui ajoute le livre
+            if(auteur.getCode() == l.getCodeAuteur()){
+                TreeSet livres = entry.getValue();
+                livres.add(l);
+            }
+        }
     }
 
     /**
@@ -161,14 +175,46 @@ public class Bdd implements Signatures{
 
     }
 
+
+
+    public String toString0() {
+        String str = "";
+        for (Map.Entry<Auteur, TreeSet<Livre>> entry : mapBiblio.entrySet()) {
+            TreeSet livres = entry.getValue();
+            str += entry.getKey() + " :";
+            for(Object l : livres){
+                str += "\n\t" + l;
+            }
+            str += "\n";
+        }
+        return str;
+    }
+
     /**
-     * Pour permettre l’affichage de la map en ordre croissant du nom des auteurs.
-     * @return La liste des noms des auteurs
+     * Redéfinition de toString
+     * @return Renvoie la liste des auteurs en ordre croissant, ainsi que leurs oeuvres.
      */
     @Override
     public String toString() {
-        // TODO
-        return mapBiblio.toString();
+        List <Map.Entry<Auteur, TreeSet<Livre>>> liste;
+        Set <Map.Entry<Auteur, TreeSet<Livre>>> set;
+
+        set = mapBiblio.entrySet();
+        liste = new ArrayList<>(set);
+
+        Collections.sort(liste, new BiblioMapTriAlpha());
+
+        String str = "";
+        for(Map.Entry<Auteur, TreeSet<Livre>> l : liste){
+            TreeSet livres = l.getValue();
+            str += l.getKey() + " :";
+            for(Object o : livres){
+                str += "\n\t" + o;
+            }
+            str += "\n";
+        }
+
+        return str;
     }
 
 
@@ -176,7 +222,7 @@ public class Bdd implements Signatures{
 
 
     @SuppressWarnings("unchecked")
-    // Permet de récupérer un Auteur ou un Livre
+    // Permet de récupérer un Auteur ou un Livre lors de la lecture des fichiers texte
     private <T> T getObject(String type, String data) {
         m_lineNumber++;
         T t = null;
