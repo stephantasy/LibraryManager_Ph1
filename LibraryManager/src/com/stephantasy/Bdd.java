@@ -7,13 +7,16 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 
+
 public class Bdd implements Signatures{
 
-    private TreeMap<Auteur, TreeSet<Livre>> mapBiblio = new TreeMap<>();
+    private Map<Auteur, TreeSet<Livre>> mapBiblio = new TreeMap<>();
 
     private int m_lineNumber = 0; // Pour tracer le numéro de ligne en erreur lors de la lecture d'un fichier
+    private List <Map.Entry<Auteur, TreeSet<Livre>>> entryMapList;
+    private boolean isEntryMapListUpToDate = false;
 
-    public Bdd(){
+    Bdd(){
         /* Constructeur vide demandé par le client */
     }
 
@@ -38,19 +41,6 @@ public class Bdd implements Signatures{
         }
     }
 
-    /**
-     * Ajout d'auteurs ou de livres à notre Map
-     * @param obj
-     * @param <T>
-     */
-    private <T> void addToMap(T obj) {
-        if( obj instanceof Auteur) {
-            addAuteur((Auteur) obj);
-        }
-        else if( obj instanceof Livre) {
-            addLivre((Livre) obj);
-        }
-    }
 
 
     /**
@@ -60,6 +50,7 @@ public class Bdd implements Signatures{
      */
     @Override
     public void addAuteur(Auteur a) {
+        isEntryMapListUpToDate = false;
         // On a que la clé, donc la valeur est nulle
         mapBiblio.put(a, new TreeSet<>());
     }
@@ -93,6 +84,7 @@ public class Bdd implements Signatures{
      */
     @Override
     public void addLivre(Livre l) {
+        isEntryMapListUpToDate = false;
         for(Map.Entry<Auteur, TreeSet<Livre>> entry : mapBiblio.entrySet()) {
             Auteur auteur = entry.getKey();
 
@@ -112,6 +104,12 @@ public class Bdd implements Signatures{
      */
     @Override
     public Auteur getAuteur(String nom) {
+        Set<Auteur> auteurs = mapBiblio.keySet();
+        for (Auteur a : auteurs) {
+            if(a.getNom().equalsIgnoreCase(nom)){
+                return a;
+            }
+        }
         return null;
     }
 
@@ -122,6 +120,15 @@ public class Bdd implements Signatures{
      */
     @Override
     public Auteur getAuteur(int codeAuteur) {
+        Auteur auteurTemp = new Auteur("", codeAuteur, "");
+        if(mapBiblio.containsKey(auteurTemp)) {
+            Set<Auteur> auteurs = mapBiblio.keySet();
+            for (Auteur a : auteurs) {
+                if(a.getCode() == codeAuteur){
+                    return a;
+                }
+            }
+        }
         return null;
     }
 
@@ -152,7 +159,11 @@ public class Bdd implements Signatures{
      */
     @Override
     public Collection getColLivresAut(Auteur unAuteur) {
-        return null;
+        Collection collection = new TreeSet<Livre>();
+        if(unAuteur != null) {
+            collection.addAll(mapBiblio.get(unAuteur));
+        }
+        return collection;
     }
 
     /**
@@ -196,12 +207,7 @@ public class Bdd implements Signatures{
      */
     @Override
     public String toString() {
-        List <Map.Entry<Auteur, TreeSet<Livre>>> liste;
-        Set <Map.Entry<Auteur, TreeSet<Livre>>> set;
-
-        set = mapBiblio.entrySet();
-        liste = new ArrayList<>(set);
-
+        List <Map.Entry<Auteur, TreeSet<Livre>>> liste = getEntryList();
         Collections.sort(liste, new BiblioMapTriAlpha());
 
         String str = "";
@@ -213,7 +219,6 @@ public class Bdd implements Signatures{
             }
             str += "\n";
         }
-
         return str;
     }
 
@@ -221,8 +226,29 @@ public class Bdd implements Signatures{
     /* PRIVATE PART */
 
 
+    /**
+     * Ajout d'auteurs ou de livres à notre Map
+     * @param obj
+     * @param <T>
+     */
+    private <T> void addToMap(T obj) {
+        isEntryMapListUpToDate = false;
+        if( obj instanceof Auteur) {
+            addAuteur((Auteur) obj);
+        }
+        else if( obj instanceof Livre) {
+            addLivre((Livre) obj);
+        }
+    }
+
+    /**
+     * Permet de récupérer un Auteur ou un Livre lors de la lecture des fichiers texte
+     * @param type
+     * @param data
+     * @param <T>
+     * @return
+     */
     @SuppressWarnings("unchecked")
-    // Permet de récupérer un Auteur ou un Livre lors de la lecture des fichiers texte
     private <T> T getObject(String type, String data) {
         m_lineNumber++;
         T t = null;
@@ -236,5 +262,15 @@ public class Bdd implements Signatures{
         return t;
     }
 
+    private List<Map.Entry<Auteur, TreeSet<Livre>>> getEntryList(){
+        Set <Map.Entry<Auteur, TreeSet<Livre>>> set;
+        set = mapBiblio.entrySet();
+        entryMapList = new ArrayList<>(set);
+        isEntryMapListUpToDate = true;
+        return entryMapList;
+    }
+
+
 
 }
+

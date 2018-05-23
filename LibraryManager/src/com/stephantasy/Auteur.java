@@ -1,9 +1,10 @@
 package com.stephantasy;
 
-public class Auteur implements Comparable<Auteur>{
-    private int code;
-    private String nom;
-    private String pays;
+// Note : la classe est Immutable car elle sert de clé à une Map !
+public final class Auteur implements Comparable<Auteur>{
+    private final int code;
+    private final String nom;
+    private final String pays;
 
     public Auteur(String nom, int code, String pays)  {
         this.nom = nom;
