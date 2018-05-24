@@ -16,6 +16,10 @@ public class Bdd implements Signatures{
     private List <Map.Entry<Auteur, TreeSet<Livre>>> entryMapList;
     private boolean isEntryMapListUpToDate = false;
 
+    private List<Livre> listeLivres = new ArrayList<>();
+    private boolean isListeLivresUpToDate = false;
+    private boolean isListeLivresSorted = false;
+
     Bdd(){
         /* Constructeur vide demandé par le client */
     }
@@ -139,7 +143,31 @@ public class Bdd implements Signatures{
      */
     @Override
     public Livre getLivre(String titre) {
+        if(!isListeLivresUpToDate){
+            listeLivresUpdater();
+        }
+        if(!isListeLivresSorted){
+            listeLivresSorter();
+        }
+        int index = Collections.binarySearch(listeLivres, new Livre(titre, -1, -1, "", -1, -1));
+        if(index >= 0) {
+            return listeLivres.get(index);
+        }
         return null;
+    }
+
+    private void listeLivresSorter() {
+        Collections.sort(listeLivres);
+        isListeLivresSorted = true;
+    }
+
+    private void listeLivresUpdater() {
+        listeLivres.clear();
+        Collection<TreeSet<Livre>> list = mapBiblio.values();
+        for (TreeSet<Livre> ts : list) {
+            listeLivres.addAll(ts);
+        }
+        isListeLivresUpToDate = true;
     }
 
     /**
@@ -149,6 +177,15 @@ public class Bdd implements Signatures{
      */
     @Override
     public Livre getLivre(int codeLivre) {
+        if(!isListeLivresUpToDate){
+            listeLivresUpdater();
+        }
+        for(Iterator<Livre> i = listeLivres.iterator() ; i.hasNext() ; ){
+            Livre livreTemp = i.next();
+            if(livreTemp.getCode() == codeLivre){
+                return livreTemp;
+            }
+        }
         return null;
     }
 

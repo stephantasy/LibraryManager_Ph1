@@ -8,12 +8,6 @@ public class BadDataForThisConstructor extends Exception {
         message = msg;
     }
 
-    public BadDataForThisConstructor() {
-    }
-
-    public BadDataForThisConstructor(String msg, Exception e) {
-    }
-
     @Override
     public String getMessage() {
         return message;

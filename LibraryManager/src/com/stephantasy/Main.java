@@ -65,14 +65,25 @@ public class Main {
             }
         }
 
- /*
+        System.out.println("");
+
         //afficher un livre selon son titre et afficher aussi le nom l'auteur (pas si évident)
         unLivre = BdDonnees.getLivre("ROBINSON CRUSOE");
         if(unLivre != null)
         {  int codeNum = unLivre.getCodeAuteur();  //prévoyez cette méthode dans Livre
         System.out.println(unLivre + " de " + BdDonnees.getAuteur(codeNum).getNom());
         }
-*/
+
+        //afficher un livre selon son code et afficher aussi le nom l'auteur (pas si évident)
+        unLivre = BdDonnees.getLivre(34);
+        if(unLivre != null)
+        {  int codeNum = unLivre.getCodeAuteur();  //prévoyez cette méthode dans Livre
+            System.out.println(unLivre + " de " + BdDonnees.getAuteur(codeNum).getNom());
+        }
+
+
+        System.out.println("");
+
 /*
         //Créer les fichiers de rapports
         try {
@@ -104,7 +115,7 @@ public class Main {
         // - Faire test de performances avec des fichiers d'entrés BEAUCOUP plus long
         // - Ajouter une méthode "Map.Entry<Auteur, TreeSet<Livre>> getEntry()" et une variable Map.Entry<Auteur, TreeSet<Livre>> entry,
         // (on check avec un bool si on peut utiliser la variable au lien d'appeler la méthode), puis refaire le test
-        // - Ajouter aussi une méthode de tri appelé seulement si dans le désrodre
-        // - Essayer des faire des recherches dans une HashMap au-lieu d'une TreeMap (plus rapide)
+        // - Ajouter aussi une méthode de tri appelé seulement si dans le désordre
+        // - Essayer des faire des recherches dans une "HashMap" et "LinkedHashMap" au-lieu d'une TreeMap (plus rapide)
     }
 }

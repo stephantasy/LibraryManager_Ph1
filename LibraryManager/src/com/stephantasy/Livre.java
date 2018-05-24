@@ -57,12 +57,12 @@ public class Livre implements Comparable<Livre> {
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        return titre.equalsIgnoreCase(((Livre)obj).titre);
     }
 
     @Override
     public int hashCode() {
-        return code;
+        return titre.hashCode();
     }
 
     @Override
@@ -71,21 +71,12 @@ public class Livre implements Comparable<Livre> {
     }
 
     /**
-     * On compare le nom du livre, puis son code s'il sont identiques
+     * On compare le nom du livre (supposé unique !)
      * @param o
      * @return
      */
     @Override
     public int compareTo(Livre o) {
-        int result = titre.compareTo(o.titre);
-        if(result == 0){
-            if(code == o.code)
-                return 0;
-            else if(code > o.code)
-                return 1;
-            else
-                return -1;
-        }
-        return result;
+        return titre.compareToIgnoreCase(o.titre);
     }
 }
