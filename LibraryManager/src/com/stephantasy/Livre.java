@@ -67,7 +67,7 @@ public class Livre implements Comparable<Livre> {
 
     @Override
     public String toString() {
-        return String.format("%-42s %-12s %-8s %d", titre, catagorie, Double.toString(prix) + "$", code);
+        return String.format("%-42s %-12s %8s %4d", titre, catagorie, String.format("%1$,.2f", prix) + "$", code);
     }
 
     /**

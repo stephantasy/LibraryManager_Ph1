@@ -70,21 +70,23 @@ public class Main {
         //afficher un livre selon son titre et afficher aussi le nom l'auteur (pas si évident)
         unLivre = BdDonnees.getLivre("ROBINSON CRUSOE");
         if(unLivre != null)
-        {  int codeNum = unLivre.getCodeAuteur();  //prévoyez cette méthode dans Livre
-        System.out.println(unLivre + " de " + BdDonnees.getAuteur(codeNum).getNom());
+        {
+            int codeNum = unLivre.getCodeAuteur();  //prévoyez cette méthode dans Livre
+            System.out.println(unLivre + " de " + BdDonnees.getAuteur(codeNum).getNom());
         }
 
         //afficher un livre selon son code et afficher aussi le nom l'auteur (pas si évident)
         unLivre = BdDonnees.getLivre(34);
         if(unLivre != null)
-        {  int codeNum = unLivre.getCodeAuteur();  //prévoyez cette méthode dans Livre
+        {
+            int codeNum = unLivre.getCodeAuteur();  //prévoyez cette méthode dans Livre
             System.out.println(unLivre + " de " + BdDonnees.getAuteur(codeNum).getNom());
         }
 
 
         System.out.println("");
 
-/*
+
         //Créer les fichiers de rapports
         try {
             BdDonnees.rapportParAuteurs();
@@ -96,7 +98,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-*/
+
 
 
         //Prévoyez un toString dans Bdd pour faire afficher en ordre de saisie des auteurs

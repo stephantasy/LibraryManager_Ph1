@@ -1,0 +1,81 @@
+BALZAC, HONORE (DE) :
+	EUGENIE GRANDET                            Roman          23,45$   24
+	HISTOIRE DES TREIZE                        Roman          22,00$   80
+	LE LYS DANS LA VALLEE                      Roman          23,00$   26
+	LE PERE GORIOT                             Roman          18,00$   78
+BEECHER-STOWE, HARRIET :
+BOISGONTIER, JACQUES :
+	GUIDE P.S.I. PROGRAMMEUR ACCESS 1.1        Manuel         26,00$  271
+CERVANTES :
+	DON QUICHOTTE DE LA MANCHE                 Roman          11,50$   22
+CHILD, LEE :
+	61 HEURES                                  Roman          29,95$  275
+	FOLIE FURIEUSE                             Roman          29,95$  277
+	LISTE MORTELLE                             Roman          17,99$  232
+COLLODI, CARLO :
+	PINOCCHIO                                  Roman          14,00$   16
+COOPER, FENIMORE :
+	LE DERNIER DES MOHICANS                    Essai          15,80$   14
+DAUDET, ALFONSE :
+	LE PETIT CHOSE                             Roman          21,00$   18
+	LETTRES DE MON MOULIN                      Nouvelles      14,60$   20
+DE FOE, DANIEL :
+	MONA ET MOI                                Biographie     10,00$  230
+	ROBINSON CRUSOE                            Roman          21,00$    2
+DUMAS, ALEXANDRE :
+	LES TROIS MOUSQUETAIRES                    Roman          11,25$   84
+ERCKMANN-CHATRIAN :
+	MADAME THERESE                             Biographie     15,00$   12
+GAUTIER, THEOPHILE :
+	LE CAPITAINE FRACASSE                      Roman          24,95$    5
+HEYERDAHL, THOR :
+HILL, HENRY :
+	ANTONIO STRADIVARI, SA VIE ET SON OEUVRE   Biographie     16,75$  227
+HUGO, VICTOR :
+	LA LEGENDE DES SIECLES                     Essai          15,50$   36
+	LES MISERABLES                             Roman           9,50$   30
+	LES TRAVAILLEURS DE LA MER                 Roman          19,00$   32
+	NOTRE-DAME DE PARIS                        Roman           8,80$   34
+KING, STEPHEN :
+	Carrie                                     Roman           7,99$  222
+LA FONTAINE, JEAN (DE) :
+	FABLES                                     Autre          48,00$   62
+MALOT, HECTOR :
+	SANS FAMILLE                               Roman          10,00$   72
+NEWBY, ERIC :
+PERRAULT, CHARLES :
+	CONTES                                     Nouvelles      69,00$   64
+POE, EDGAR :
+	HISTOIRES EXTRAORDINAIRES                  Nouvelles      21,00$   60
+ROUGE, DANIEL :
+	INTRODUCTION A ACCESS 10.1                 Manuel         19,00$  252
+SANDFORD, JOHN :
+	FROID AUX YEUX                             Roman          24,95$  285
+	LA PROIE CACHEE                            Roman          24,95$  280
+SCOTT, WALTER :
+	IVANHOE                                    Roman          31,00$   58
+SHAKESPEARE, WILLIAM :
+	TRAGEDIES                                  Essai          19,00$   56
+SUE, EUGENE :
+	LE JUIF ERRANT                             Roman          15,50$   70
+SWIFT, JONATHAN :
+	LES VOYAGES DE GULLIVER                    Roman           7,50$   46
+TABARLY, ERIC :
+	VICTOIRE EN SOLITAIRE                      Biographie     19,95$   73
+TERRAY, LIONEL :
+TOLKIEN, J.R.R. :
+	BILBO LE HOBBIT                            Roman           7,50$   68
+TWAIN, MARK :
+	LES AVENTURES DE TOM SAWYER                Roman          27,00$   54
+VERNE, JULES :
+	CINQ SEMAINES EN BALLON                    Roman          14,00$   40
+	DE LA TERRE A LA LUNE                      Roman          16,25$  224
+	HECTOR SERVADAC                            Autre          13,75$   38
+	LA MAISON A VAPEUR                         Roman          13,00$   74
+	LE PHARE DU BOUT DU MONDE                  Roman          25,50$   82
+	NORD CONTRE SUD                            Essai           7,50$   44
+	UN CAPITAINE DE QUINZE ANS                 Roman          16,00$   76
+ZOLA, EMILE :
+	GERMINAL                                   Roman          17,00$   48
+	LA BETE HUMAINE                            Autre          32,50$   52
+	LA TERRE                                   Essai          12,50$   50

@@ -47,7 +47,7 @@ public final class Auteur implements Comparable<Auteur>{
 
     @Override
     public String toString() {
-        return String.format("%s", nom);
+        return String.format("%3d\t%-30s\t%s", code, nom, pays);
     }
 
     @Override
