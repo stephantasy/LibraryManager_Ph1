@@ -10,21 +10,18 @@ import java.util.stream.Stream;
 
 public class Bdd implements Signatures{
 
-    private Map<Auteur, TreeSet<Livre>> mapBiblio = new TreeMap<>();
+    private static final String m_outPathAuteur = "RapportAuteurs.txt";
+    private static final String m_outPathLivres = "RapportLivres.txt";
 
-    private final String m_outPathAuteur = "RapportAuteurs.txt";
-    private final String m_outPathLivres = "RapportLivres.txt";
+    private Map<Auteur, TreeSet<Livre>> mapBiblio = new HashMap<>();    // La HashMap donne les meilleurs résultats de rapidité
 
-    private int m_lineNumber = 0; // Pour tracer le numéro de ligne en erreur lors de la lecture d'un fichier
-    /*private List <Map.Entry<Auteur, TreeSet<Livre>>> entryMapList;
-    private boolean isEntryMapListUpToDate = false;
-    private boolean isEntryMapListSorted = false;*/
+    private int m_lineNumberError = 0;   // Numéro de la ligne dans le fichier ayant provoqué l'erreur
 
-
-    private List<Auteur> listeAuteurs = new ArrayList<>();
+    // Liste des auteurs dans l'ordre alphabétique
+    private Set<Auteur> listeAuteurs = new TreeSet<>(new AuteurTriAlphabetique());
     private boolean isListeAuteursUpToDate = false;
-    private boolean isListeAuteursSorted = false;
 
+    // Liste des livres ; On utilise une ArrayList pour l'utilisation de BinarySearch
     private List<Livre> listeLivres = new ArrayList<>();
     private boolean isListeLivresUpToDate = false;
     private boolean isListeLivresSorted = false;
@@ -45,16 +42,14 @@ public class Bdd implements Signatures{
         // Utilisation d'un Try-With-Resource Statement pour fermer automatiquement le Stream
         try (Stream<String> stream = Files.lines( Paths.get(nomFichier), StandardCharsets.UTF_8))
         {
-            m_lineNumber = 0;
-            stream.forEach(s -> addToMap(getObject("AUTEUR", s)));
+            m_lineNumberError = 0;
+            stream.forEach(s -> addAuteur(getObject("AUTEUR", s)));
         }
         catch (IOException e)
         {
             throw new IOException("Erreur lors de la lecture du fichier " + nomFichier);
         }
     }
-
-
 
     /**
      * ajoute un auteur, passé en argument, dans la map.  La partie valeur associée est une nouvelle collection vide.
@@ -71,8 +66,8 @@ public class Bdd implements Signatures{
      * permet de lire les livres à partir d'un fichier passé en argument.
      * o	Chaque livre est ajouté à la collection associé à son auteur.
      * o	Un livre dont l’auteur n’est pas déjà dans la map est ignoré silencieusement.
-     * @param nomFichier
-     * @throws IOException
+     * @param nomFichier Nom du fichier
+     * @throws IOException  Erreur lors de la lecture du fichier
      */
     @Override
     public void lireBddLivre(String nomFichier) throws IOException {
@@ -80,8 +75,8 @@ public class Bdd implements Signatures{
         // Utilisation d'un Try-With-Resource Statement pour fermer automatiquement le Stream
         try (Stream<String> stream = Files.lines( Paths.get(nomFichier), StandardCharsets.UTF_8))
         {
-            m_lineNumber = 0;
-            stream.forEach(s -> addToMap(getObject("LIVRE", s)));
+            m_lineNumberError = 0;
+            stream.forEach(s -> addLivre(getObject("LIVRE", s)));
         }
         catch (IOException e)
         {
@@ -92,9 +87,10 @@ public class Bdd implements Signatures{
     /**
      * ajoute un objet livre, passé en argument, à la collection de l’auteur dont le code est aussi passé en argument.
      * o	Si l’auteur n’est pas déjà dans la map, l’ajout du livre est ignoré.
-     * @param l
+     * @param l Livre à ajouter
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void addLivre(Livre l) {
         for(Map.Entry<Auteur, TreeSet<Livre>> entry : mapBiblio.entrySet()) {
             Auteur auteur = entry.getKey();
@@ -110,8 +106,8 @@ public class Bdd implements Signatures{
     /**
      * Retourne l’objet Auteur, se trouvant dans la map associé à un auteur dont l’Auteur
      * (une référence sur un objet considéré égal) est passé en paramètre.
-     * @param nom
-     * @return
+     * @param nom Nom de l'auteur
+     * @return L'auteur associé au nom
      */
     @Override
     public Auteur getAuteur(String nom) {
@@ -126,8 +122,8 @@ public class Bdd implements Signatures{
 
     /**
      * Surdéfinition de la précédente mais cette fois, c’est le code numérique de l’auteur qui est passé en paramètre.
-     * @param codeAuteur
-     * @return
+     * @param codeAuteur Code de l'auteur
+     * @return  L'auteur associé au code
      */
     @Override
     public Auteur getAuteur(int codeAuteur) {
@@ -145,8 +141,8 @@ public class Bdd implements Signatures{
 
     /**
      * Retourne l’objet livre, dont le titre est passé en argument.
-     * @param titre
-     * @return
+     * @param titre Titre du livre
+     * @return Le livre correspondant au titre
      */
     @Override
     public Livre getLivre(String titre) {
@@ -165,17 +161,16 @@ public class Bdd implements Signatures{
 
     /**
      * Surdéfinition de la précédente mais cette fois, c’est le code numérique du livre qui est passé en paramètre.
-     * @param codeLivre
-     * @return
+     * @param codeLivre Code du livre
+     * @return Le livre correspondant au code
      */
     @Override
     public Livre getLivre(int codeLivre) {
         if(!isListeLivresUpToDate){
             listeLivresUpdater();
         }
-        for(Iterator<Livre> i = listeLivres.iterator(); i.hasNext() ; ){
-            Livre livreTemp = i.next();
-            if(livreTemp.getCode() == codeLivre){
+        for (Livre livreTemp : listeLivres) {
+            if (livreTemp.getCode() == codeLivre) {
                 return livreTemp;
             }
         }
@@ -184,10 +179,11 @@ public class Bdd implements Signatures{
 
     /**
      * Reçoit en paramètre un auteur et retourne sa collection de livre (valeur associée dans la Map)
-     * @param unAuteur
-     * @return
+     * @param unAuteur Auteur demandé
+     * @return Une Collection contenant la liste des livres de l'auteur demandé (liste vide autrement)
      */
     @Override
+    @SuppressWarnings("unchecked")
     public Collection getColLivresAut(Auteur unAuteur) {
         Collection collection = new TreeSet<Livre>();
         if(unAuteur != null) {
@@ -199,7 +195,7 @@ public class Bdd implements Signatures{
     /**
      * Crée un fichier parAuteur.txt contenant la liste des auteurs et de leurs livres
      * par ordre alphabétique des auteurs puis des livres.
-     * @throws IOException
+     * @throws IOException Erreur lors de l'écriture dans le fichier
      */
     @Override
     public void rapportParAuteurs() throws IOException {
@@ -210,11 +206,11 @@ public class Bdd implements Signatures{
     /**
      * Crée un fichier parLivre.txt contenant la liste des livres et des auteurs
      * par ordre alphabétique des titres de livre.
-     * @throws IOException
+     * @throws IOException Erreur lors de l'écriture dans le fichier
      */
     @Override
     public void rapportParLivres() throws IOException {
-        String str = "";
+        StringBuilder str = new StringBuilder();
 
         // On veut les auteurs dans l'ordre d'inserstion
         if(!isListeLivresSorted){
@@ -223,26 +219,31 @@ public class Bdd implements Signatures{
 
         // On compile les données
         for(Livre l : listeLivres) {
-            str += l.toString() + "\t" +getAuteur(l.getCodeAuteur()).getNom() + "\n";
+            str.append(l.toString()).append("\t").append(getAuteur(l.getCodeAuteur()).getNom()).append("\n");
         }
 
         // On crée le fichier
-        Files.write(Paths.get(m_outPathLivres), str.getBytes());
+        Files.write(Paths.get(m_outPathLivres), str.toString().getBytes());
     }
 
 
-
-    public String toString0() {
-        String str = "";
+    /**
+     *
+     * @return Renvoie une String avec le contenu de la Map dans l'ordre d'insertion des données
+     */
+    public String getMapInInsertOrder() {
+        StringBuilder str = new StringBuilder();
         for (Map.Entry<Auteur, TreeSet<Livre>> entry : mapBiblio.entrySet()) {
             TreeSet livres = entry.getValue();
-            str += entry.getKey() + " :";
+            str.append(entry.getKey()).append(" :");
+            StringBuilder strBuilder = new StringBuilder(str.toString());
             for(Object l : livres){
-                str += "\n\t" + l;
+                strBuilder.append("\n\t").append(l);
             }
-            str += "\n";
+            str = new StringBuilder(strBuilder.toString());
+            str.append("\n");
         }
-        return str;
+        return str.toString();
     }
 
 
@@ -256,83 +257,46 @@ public class Bdd implements Signatures{
     }
 
 
-    /* PRIVATE PART */
 
+    /* ******************* */
+    /* *   PRIVATE PART    */
+    /* ******************* */
 
-    /**
-     * Ajout d'auteurs ou de livres à notre Map
-     * @param obj
-     * @param <T>
-     */
-    private <T> void addToMap(T obj) {
-        if( obj instanceof Auteur) {
-            addAuteur((Auteur) obj);
-        }
-        else if( obj instanceof Livre) {
-            addLivre((Livre) obj);
-        }
-    }
 
     /**
      * Permet de récupérer un Auteur ou un Livre lors de la lecture des fichiers texte
-     * @param type
-     * @param data
-     * @param <T>
-     * @return
+     * @param type Nom de l'objet demandé
+     * @param data Données à passer au constructeur de l'objet
+     * @param <T>  Type de l'objet demandé
+     * @return  L'objet construit demandé
      */
     @SuppressWarnings("unchecked")
     private <T> T getObject(String type, String data) {
-        m_lineNumber++;
+        m_lineNumberError++;
         T t = null;
         String[] s = data.trim().split("\t");
         ObjectFactory of = new ObjectFactory();
         try {
             t = (T) of.getObject(type, s);
         } catch (BadDataForThisConstructor e) {
-            System.out.println(e.getMessage() + " (Ligne " + m_lineNumber + ")");
+            System.out.println(e.getMessage() + " (Ligne " + m_lineNumberError + ")");
         }
         return t;
     }
 
-    // Map Entry List
-    /*private List<Map.Entry<Auteur, TreeSet<Livre>>> getEntrySet(){
-        entryMapList = new ArrayList<>(mapBiblio.entrySet());
-        isEntryMapListUpToDate = true;
-        return entryMapList;
-    }
-
-    // Sorted Map Entry List
-    private void entryMapListSorter(){
-        if(!isEntryMapListUpToDate){
-            entryMapList = getEntrySet();
-        }
-        //Collections.sort(entryMapList, new BiblioMapTriAlpha());
-        isEntryMapListSorted = true;
-    }*/
-
-
-
-    // On tri les auteurs en s'assurant d'abord que la liste soit à jour
-    private void listeAuteursSorter() {
-        if(!isListeAuteursUpToDate){
-            listeAuteursUpdater();
-        }
-        Collections.sort(listeAuteurs, new BiblioMapTriAlpha());
-        isListeAuteursSorted = true;
-    }
-
-    // On met la liste des auteurs à jour
+    /**
+     * On met la liste des auteurs à jour
+     */
     private void listeAuteursUpdater() {
         listeAuteurs.clear();
-        Collection<Auteur> list = mapBiblio.keySet();
-        for (Auteur a : list) {
-            listeAuteurs.add(a);
-        }
+        listeAuteurs.addAll(mapBiblio.keySet());
         isListeAuteursUpToDate = true;
     }
 
 
-    // On tri les livres en s'assurant d'abord que la liste soit à jour
+    /**
+     * On tri les livres en s'assurant d'abord que la liste soit à jour
+     */
     private void listeLivresSorter() {
         if(!isListeLivresUpToDate){
             listeLivresUpdater();
@@ -341,7 +305,9 @@ public class Bdd implements Signatures{
         isListeLivresSorted = true;
     }
 
-    // On met la liste à jour
+    /**
+     * On met la liste des livres à jour
+     */
     private void listeLivresUpdater() {
         listeLivres.clear();
         Collection<TreeSet<Livre>> list = mapBiblio.values();
@@ -351,31 +317,30 @@ public class Bdd implements Signatures{
         isListeLivresUpToDate = true;
     }
 
-
     /**
      *
      * @return Renvoie la liste des auteurs en ordre croissant, ainsi que leurs oeuvres.
      */
     private String getMapToString() {
-        String str = "";
+        StringBuilder str = new StringBuilder();
 
-        // On veut les auteurs dans l'ordre d'inserstion
-        if(!isListeAuteursSorted){
-            listeAuteursSorter();
+        // On veut les auteurs dans l'ordre alphabétique
+        if(!isListeAuteursUpToDate){
+            listeAuteursUpdater();
         }
 
         // On compile les données
         for(Auteur a : listeAuteurs) {
-            str += a.getNom() + " :\n";
+            str.append(a.getNom()).append(" :\n");
 
             Collection livres = getColLivresAut(a);
             if(!livres.isEmpty()) {
                 for (Object l : livres) {
-                    str += "\t" + l.toString() + "\n";
+                    str.append("\t").append(l.toString()).append("\n");
                 }
             }
         }
-        return str;
+        return str.toString();
     }
 }
 

@@ -8,7 +8,7 @@ public class Livre implements Comparable<Livre> {
     private double prix;
     private int nbPage;
 
-    public Livre(String titre, int code, int codeAuteur, String catagorie, int nbPage, double prix) {
+    Livre(String titre, int code, int codeAuteur, String catagorie, int nbPage, double prix) {
         this.titre = titre;
         this.code = code;
         this.codeAuteur = codeAuteur;
@@ -17,7 +17,7 @@ public class Livre implements Comparable<Livre> {
         this.prix = prix;
     }
 
-    public Livre(String[] data) throws BadDataForThisConstructor{
+    Livre(String[] data) throws BadDataForThisConstructor{
         try{
             //this(data[1], Integer.parseInt(data[0]), Integer.parseInt(data[3]), data[2], Integer.parseInt(data[5]), Double.parseDouble(data[4]));
             this.titre = data[1];
@@ -31,7 +31,7 @@ public class Livre implements Comparable<Livre> {
         }
     }
 
-    public int getCode() {
+    int getCode() {
         return code;
     }
 
@@ -43,7 +43,7 @@ public class Livre implements Comparable<Livre> {
         return catagorie;
     }
 
-    public int getCodeAuteur() {
+    int getCodeAuteur() {
         return codeAuteur;
     }
 
@@ -57,6 +57,9 @@ public class Livre implements Comparable<Livre> {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj == this) return true;
+        if (!(obj instanceof Livre))return false;
         return titre.equalsIgnoreCase(((Livre)obj).titre);
     }
 
@@ -67,13 +70,13 @@ public class Livre implements Comparable<Livre> {
 
     @Override
     public String toString() {
-        return String.format("%-42s %-12s %8s %4d", titre, catagorie, String.format("%1$,.2f", prix) + "$", code);
+        return String.format("%-42s %-12s %8s %6d", titre, catagorie, String.format("%1$,.2f", prix) + "$", code);
     }
 
     /**
      * On compare le nom du livre (supposé unique !)
-     * @param o
-     * @return
+     * @param o Livre à comparer
+     * @return Entier
      */
     @Override
     public int compareTo(Livre o) {
